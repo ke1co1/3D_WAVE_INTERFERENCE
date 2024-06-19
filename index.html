@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Wave Interference Sphere</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://unpkg.com/p5.easycam"></script>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #000;
+        flex-direction: column;
+      }
+      #controlsTab {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+      }
+      #sliderContainer {
+        position: absolute;
+        top: 60px;
+        left: 20px;
+        display: none;
+        background-color: #444;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      label {
+        display: block;
+        color: white;
+        margin-top: 10px;
+      }
+      #canvasContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100vw;
+        height: 100vh;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="controlsTab">Controls</div>
+    <div id="sliderContainer">
+      <label for="ampX">X-Amplitude:</label>
+      <input id="ampX" type="range" min="0" max="50" value="20" step="0.1" />
+      <label for="freqX">X-Frequency:</label>
+      <input id="freqX" type="range" min="0.01" max="10" value="5" step="0.1" />
+      <label for="phaseX">X-Phase:</label>
+      <input id="phaseX" type="range" min="0" max="6.28" value="0" step="0.1" />
+      <label for="ampY">Y-Amplitude:</label>
+      <input id="ampY" type="range" min="0" max="50" value="20" step="0.1" />
+      <label for="freqY">Y-Frequency:</label>
+      <input
+        id="freqY"
+        type="range"
+        min="0.01"
+        max="10"
+        value="5"
+        step="0.01"
+      />
+      <label for="phaseY">Y-Phase:</label>
+      <input
+        id="phaseY"
+        type="range"
+        min="0"
+        max="6.28"
+        value="0"
+        step="0.01"
+      />
+      <label for="timeSpeed">Time Speed:</label>
+      <input
+        id="timeSpeed"
+        type="range"
+        min="0.01"
+        max="0.5"
+        value="0.06"
+        step="0.001"
+      />
+      <label for="spinSpeed">Spin Speed:</label>
+      <input
+        id="spinSpeed"
+        type="range"
+        min="0"
+        max="1"
+        value="0.1"
+        step="0.1"
+      />
+      <label for="zoomLevel">Zoom Level:</label>
+      <input
+        id="zoomLevel"
+        type="range"
+        min="0.1"
+        max="2"
+        value="0.4"
+        step="0.1"
+      />
+    </div>
+    <div id="canvasContainer"></div>
+    <script>
+      let ampXSlider,
+        freqXSlider,
+        phaseXSlider,
+        ampYSlider,
+        freqYSlider,
+        phaseYSlider,
+        timeSpeedSlider,
+        spinSpeedSlider,
+        zoomLevelSlider;
+      let canvas;
+      let sphereRadius = 300; // Define the radius of the sphere
+      let angle = 0; // Initial angle for rotation
+      let additionalZoom = 1; // Initial additional zoom level
+      let easycam;
+
+      function setup() {
+        canvas = createCanvas(windowWidth, windowHeight, WEBGL);
+        canvas.parent("canvasContainer");
+
+        ampXSlider = document.getElementById("ampX");
+        freqXSlider = document.getElementById("freqX");
+        phaseXSlider = document.getElementById("phaseX");
+        ampYSlider = document.getElementById("ampY");
+        freqYSlider = document.getElementById("freqY");
+        phaseYSlider = document.getElementById("phaseY");
+        timeSpeedSlider = document.getElementById("timeSpeed");
+        spinSpeedSlider = document.getElementById("spinSpeed");
+        zoomLevelSlider = document.getElementById("zoomLevel");
+
+        easycam = createEasyCam({ distance: 500 });
+        easycam.state_reset = {
+          distance: 500,
+          center: [0, 0, 0],
+          rotation: [0.707, 0, 0, 0.707],
+        };
+        easycam.setState(easycam.state_reset, 0); // Set initial view to be from the top
+
+        document.oncontextmenu = () => false; // Disable the context menu to allow right-click for EasyCam
+
+        document.getElementById("controlsTab").addEventListener("click", () => {
+          const sliderContainer = document.getElementById("sliderContainer");
+          if (sliderContainer.style.display === "none") {
+            sliderContainer.style.display = "block";
+          } else {
+            sliderContainer.style.display = "none";
+          }
+        });
+      }
+
+      function draw() {
+        // Get slider values
+        let ampX = parseFloat(ampXSlider.value);
+        let freqX = parseFloat(freqXSlider.value);
+        let phaseX = parseFloat(phaseXSlider.value);
+        let ampY = parseFloat(ampYSlider.value);
+        let freqY = parseFloat(freqYSlider.value);
+        let phaseY = parseFloat(phaseYSlider.value);
+        let timeSpeed = parseFloat(timeSpeedSlider.value);
+        let spinSpeed = parseFloat(spinSpeedSlider.value);
+        let zoomLevel = parseFloat(zoomLevelSlider.value);
+
+        // Check if all sliders are zero and hide canvas if true
+        let canvasContainer = document.getElementById("canvasContainer");
+        if (
+          ampX === 0 &&
+          freqX === 0 &&
+          phaseX === 0 &&
+          ampY === 0 &&
+          freqY === 0 &&
+          phaseY === 0
+        ) {
+          canvasContainer.classList.add("hidden");
+          return; // Skip the drawing code
+        } else {
+          canvasContainer.classList.remove("hidden");
+        }
+
+        background(0);
+        rotateZ(angle); // Rotate horizontally based on angle
+
+        angle += spinSpeed; // Increment angle based on spin speed
+
+        let time = frameCount * timeSpeed;
+        let step = PI / 60; // Smaller step size for higher resolution
+
+        // Calculate total zoom level
+        let totalZoom = 500 / (zoomLevel * additionalZoom); // Adjust zoom level
+        totalZoom = constrain(totalZoom, 0.1, 5000);
+        easycam.setDistance(totalZoom); // Apply zoom level
+
+        noFill();
+        stroke(255); // Set stroke to white for visibility
+
+        for (let r = 0; r < sphereRadius; r += 20) {
+          for (let phi = 0; phi < PI; phi += step) {
+            beginShape(POINTS);
+            for (let theta = 0; theta < TWO_PI; theta += step) {
+              let x = r * sin(phi) * cos(theta);
+              let y = r * sin(phi) * sin(theta);
+              let z = r * cos(phi);
+
+              let angleX =
+                TWO_PI * (freqX * 0.1) * (theta / TWO_PI) + phaseX + time;
+              let angleY = TWO_PI * (freqY * 0.1) * (phi / PI) + phaseY + time;
+              let sineX = ampX * 0.1 * sin(angleX);
+              let sineY = ampY * 0.1 * sin(angleY);
+              let offset = sineX + sineY;
+
+              let col = color(
+                128 + 128 * sin(offset),
+                128 + 128 * cos(offset),
+                255
+              );
+              stroke(col);
+
+              vertex(
+                x + offset * cos(theta),
+                y + offset * sin(theta),
+                z + offset
+              );
+            }
+            endShape();
+          }
+        }
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+
+      function mouseWheel(event) {
+        // Update additional zoom level based on mouse wheel scroll
+        additionalZoom -= event.delta * 0.001;
+        additionalZoom = constrain(additionalZoom, 0.1, 10);
+      }
+    </script>
+  </body>
+</html>
