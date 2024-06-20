@@ -15,7 +15,7 @@ This project demonstrates wave interference on a 3D sphere. The user can control
 
 ## Live Demo
 
-You can view the live demo of this project on GitHub Pages: [3D Wave Interference Sphere](https://ke1co1.github.io/3D-Wave-Interference-Sphere/)
+You can view the live demo of this project on GitHub Pages: [3D Wave Interference Sphere](https://ke1co1.github.io/3D_WAVE_SPHERE/)
 
 ## Getting Started
 
