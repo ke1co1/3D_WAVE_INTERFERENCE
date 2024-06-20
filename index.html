@@ -24,6 +24,11 @@
         color: white;
         padding: 10px;
         cursor: pointer;
+        border: none;
+        outline: none;
+      }
+      #controlsTab.active {
+        background-color: #555;
       }
       #sliderContainer {
         position: absolute;
@@ -52,12 +57,12 @@
     </style>
   </head>
   <body>
-    <div id="controlsTab">Controls</div>
+    <button id="controlsTab">Controls</button>
     <div id="sliderContainer">
       <label for="ampX">X-Amplitude:</label>
-      <input id="ampX" type="range" min="0" max="50" value="20" step="0.1" />
+      <input id="ampX" type="range" min="0" max="50" value="0" step="0.1" />
       <label for="freqX">X-Frequency:</label>
-      <input id="freqX" type="range" min="0.01" max="10" value="5" step="0.1" />
+      <input id="freqX" type="range" min="0.01" max="10" value="6" step="0.1" />
       <label for="phaseX">X-Phase:</label>
       <input id="phaseX" type="range" min="0" max="6.28" value="0" step="0.1" />
       <label for="ampY">Y-Amplitude:</label>
@@ -68,7 +73,7 @@
         type="range"
         min="0.01"
         max="10"
-        value="5"
+        value="20"
         step="0.01"
       />
       <label for="phaseY">Y-Phase:</label>
@@ -86,7 +91,7 @@
         type="range"
         min="0.01"
         max="0.5"
-        value="0.06"
+        value="0"
         step="0.001"
       />
       <label for="spinSpeed">Spin Speed:</label>
@@ -104,7 +109,7 @@
         type="range"
         min="0.1"
         max="2"
-        value="0.4"
+        value=".75"
         step="0.1"
       />
     </div>
@@ -151,10 +156,16 @@
 
         document.getElementById("controlsTab").addEventListener("click", () => {
           const sliderContainer = document.getElementById("sliderContainer");
-          if (sliderContainer.style.display === "none") {
+          const controlsTab = document.getElementById("controlsTab");
+          if (
+            sliderContainer.style.display === "none" ||
+            sliderContainer.style.display === ""
+          ) {
             sliderContainer.style.display = "block";
+            controlsTab.classList.add("active");
           } else {
             sliderContainer.style.display = "none";
+            controlsTab.classList.remove("active");
           }
         });
       }
@@ -211,11 +222,10 @@
               let y = r * sin(phi) * sin(theta);
               let z = r * cos(phi);
 
-              let angleX =
-                TWO_PI * (freqX * 0.1) * (theta / TWO_PI) + phaseX + time;
-              let angleY = TWO_PI * (freqY * 0.1) * (phi / PI) + phaseY + time;
-              let sineX = ampX * 0.1 * sin(angleX);
-              let sineY = ampY * 0.1 * sin(angleY);
+              let angleX = TWO_PI * freqX * (theta / TWO_PI) + phaseX + time;
+              let angleY = TWO_PI * freqY * (phi / PI) + phaseY + time;
+              let sineX = ampX * sin(angleX);
+              let sineY = ampY * sin(angleY);
               let offset = sineX + sineY;
 
               let col = color(
