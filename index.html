@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3D Wave Interference Sphere</title>
+    <title>3D Wave Interference</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script src="https://unpkg.com/p5.easycam"></script>
     <style>
@@ -27,7 +27,19 @@
         border: none;
         outline: none;
       }
-      #controlsTab.active {
+      #logCoordsButton {
+        position: absolute;
+        top: 20px;
+        left: 100px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+      #controlsTab.active,
+      #logCoordsButton.active {
         background-color: #555;
       }
       #sliderContainer {
@@ -58,25 +70,33 @@
   </head>
   <body>
     <button id="controlsTab">Controls</button>
+    <!-- <button id="logCoordsButton">Log Coordinates</button> -->
     <div id="sliderContainer">
-      <label for="ampX">X-Amplitude:</label>
+      <label for="ampX">X-Amplitude: <span id="ampXVal"></span></label>
       <input id="ampX" type="range" min="0" max="50" value="0" step="0.1" />
-      <label for="freqX">X-Frequency:</label>
-      <input id="freqX" type="range" min="0.01" max="10" value="6" step="0.1" />
-      <label for="phaseX">X-Phase:</label>
+      <label for="freqX">X-Frequency: <span id="freqXVal"></span></label>
+      <input
+        id="freqX"
+        type="range"
+        min="0.01"
+        max="10"
+        value="6"
+        step="0.01"
+      />
+      <label for="phaseX">X-Phase: <span id="phaseXVal"></span></label>
       <input id="phaseX" type="range" min="0" max="6.28" value="0" step="0.1" />
-      <label for="ampY">Y-Amplitude:</label>
-      <input id="ampY" type="range" min="0" max="50" value="20" step="0.1" />
-      <label for="freqY">Y-Frequency:</label>
+      <label for="ampY">Y-Amplitude: <span id="ampYVal"></span></label>
+      <input id="ampY" type="range" min="0" max="50" value="0" step="0.1" />
+      <label for="freqY">Y-Frequency: <span id="freqYVal"></span></label>
       <input
         id="freqY"
         type="range"
         min="0.01"
         max="10"
-        value="20"
+        value="0"
         step="0.01"
       />
-      <label for="phaseY">Y-Phase:</label>
+      <label for="phaseY">Y-Phase: <span id="phaseYVal"></span></label>
       <input
         id="phaseY"
         type="range"
@@ -85,7 +105,7 @@
         value="0"
         step="0.01"
       />
-      <label for="timeSpeed">Time Speed:</label>
+      <label for="timeSpeed">Time Speed: <span id="timeSpeedVal"></span></label>
       <input
         id="timeSpeed"
         type="range"
@@ -94,24 +114,21 @@
         value="0"
         step="0.001"
       />
-      <label for="spinSpeed">Spin Speed:</label>
-      <input
-        id="spinSpeed"
-        type="range"
-        min="0"
-        max="1"
-        value="0.1"
-        step="0.1"
-      />
-      <label for="zoomLevel">Zoom Level:</label>
+      <label for="spinSpeed">Spin Speed: <span id="spinSpeedVal"></span></label>
+      <input id="spinSpeed" type="range" min="0" max="1" value="0" step="0.1" />
+      <label for="zoomLevel">Zoom Level: <span id="zoomLevelVal"></span></label>
       <input
         id="zoomLevel"
         type="range"
         min="0.1"
         max="2"
-        value=".5"
+        value="0.5"
         step="0.1"
       />
+      <label for="radius">Radius: <span id="radiusVal"></span></label>
+      <input id="radius" type="range" min="0" max="300" value="88" step="1" />
+      <label for="density">Density: <span id="densityVal"></span></label>
+      <input id="density" type="range" min="1" max="100" value="33" step="1" />
     </div>
     <div id="canvasContainer"></div>
     <script>
@@ -123,12 +140,14 @@
         phaseYSlider,
         timeSpeedSlider,
         spinSpeedSlider,
-        zoomLevelSlider;
+        zoomLevelSlider,
+        radiusSlider,
+        densitySlider;
       let canvas;
-      let sphereRadius = 300; // Define the radius of the sphere
       let angle = 0; // Initial angle for rotation
       let additionalZoom = 1; // Initial additional zoom level
       let easycam;
+      let points = []; // Array to store the points
 
       function setup() {
         canvas = createCanvas(windowWidth, windowHeight, WEBGL);
@@ -143,6 +162,8 @@
         timeSpeedSlider = document.getElementById("timeSpeed");
         spinSpeedSlider = document.getElementById("spinSpeed");
         zoomLevelSlider = document.getElementById("zoomLevel");
+        radiusSlider = document.getElementById("radius");
+        densitySlider = document.getElementById("density");
 
         easycam = createEasyCam({ distance: 500 });
         easycam.state_reset = {
@@ -168,6 +189,43 @@
             controlsTab.classList.remove("active");
           }
         });
+
+        // document
+        //   .getElementById("logCoordsButton")
+        //   .addEventListener("click", logCoordinates);
+
+        // Add event listeners to update the display values
+        ampXSlider.addEventListener("input", updateValues);
+        freqXSlider.addEventListener("input", updateValues);
+        phaseXSlider.addEventListener("input", updateValues);
+        ampYSlider.addEventListener("input", updateValues);
+        freqYSlider.addEventListener("input", updateValues);
+        phaseYSlider.addEventListener("input", updateValues);
+        timeSpeedSlider.addEventListener("input", updateValues);
+        spinSpeedSlider.addEventListener("input", updateValues);
+        zoomLevelSlider.addEventListener("input", updateValues);
+        radiusSlider.addEventListener("input", updateValues);
+        densitySlider.addEventListener("input", updateValues);
+
+        // Initial call to set the display values
+        updateValues();
+      }
+
+      function updateValues() {
+        document.getElementById("ampXVal").textContent = ampXSlider.value;
+        document.getElementById("freqXVal").textContent = freqXSlider.value;
+        document.getElementById("phaseXVal").textContent = phaseXSlider.value;
+        document.getElementById("ampYVal").textContent = ampYSlider.value;
+        document.getElementById("freqYVal").textContent = freqYSlider.value;
+        document.getElementById("phaseYVal").textContent = phaseYSlider.value;
+        document.getElementById("timeSpeedVal").textContent =
+          timeSpeedSlider.value;
+        document.getElementById("spinSpeedVal").textContent =
+          spinSpeedSlider.value;
+        document.getElementById("zoomLevelVal").textContent =
+          zoomLevelSlider.value;
+        document.getElementById("radiusVal").textContent = radiusSlider.value;
+        document.getElementById("densityVal").textContent = densitySlider.value;
       }
 
       function draw() {
@@ -181,22 +239,10 @@
         let timeSpeed = parseFloat(timeSpeedSlider.value);
         let spinSpeed = parseFloat(spinSpeedSlider.value);
         let zoomLevel = parseFloat(zoomLevelSlider.value);
+        let radius = parseFloat(radiusSlider.value);
 
-        // Check if all sliders are zero and hide canvas if true
-        let canvasContainer = document.getElementById("canvasContainer");
-        if (
-          ampX === 0 &&
-          freqX === 0 &&
-          phaseX === 0 &&
-          ampY === 0 &&
-          freqY === 0 &&
-          phaseY === 0
-        ) {
-          canvasContainer.classList.add("hidden");
-          return; // Skip the drawing code
-        } else {
-          canvasContainer.classList.remove("hidden");
-        }
+        // Get the actual density value
+        let density = PI * ((101 - parseFloat(densitySlider.value)) / 100);
 
         background(0);
         rotateZ(angle); // Rotate horizontally based on angle
@@ -204,7 +250,6 @@
         angle += spinSpeed; // Increment angle based on spin speed
 
         let time = frameCount * timeSpeed;
-        let step = PI / 60; // Smaller step size for higher resolution
 
         // Calculate total zoom level
         let totalZoom = 500 / (zoomLevel * additionalZoom); // Adjust zoom level
@@ -214,10 +259,12 @@
         noFill();
         stroke(255); // Set stroke to white for visibility
 
-        for (let r = 0; r < sphereRadius; r += 20) {
-          for (let phi = 0; phi < PI; phi += step) {
+        points = []; // Clear points array
+
+        for (let r = 0; r < radius; r += 20) {
+          for (let phi = 0; phi < PI; phi += density) {
             beginShape(POINTS);
-            for (let theta = 0; theta < TWO_PI; theta += step) {
+            for (let theta = 0; theta < TWO_PI; theta += density) {
               let x = r * sin(phi) * cos(theta);
               let y = r * sin(phi) * sin(theta);
               let z = r * cos(phi);
@@ -235,15 +282,35 @@
               );
               stroke(col);
 
-              vertex(
-                x + offset * cos(theta),
-                y + offset * sin(theta),
-                z + offset
-              );
+              let newX = x + offset * cos(theta);
+              let newY = y + offset * sin(theta);
+              let newZ = z + offset;
+
+              points.push({ x: newX, y: newY, z: newZ });
+
+              vertex(newX, newY, newZ);
             }
             endShape();
           }
         }
+      }
+
+      function logCoordinates() {
+        const nonZeroPoints = points.filter(
+          (p) => p.x !== 0 || p.y !== 0 || p.z !== 0
+        );
+        const csvContent = nonZeroPoints
+          .map((p) => `${p.x},${p.y},${p.z}`)
+          .join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.setAttribute("hidden", "");
+        a.setAttribute("href", url);
+        a.setAttribute("download", "coordinates.csv");
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
 
       function windowResized() {
