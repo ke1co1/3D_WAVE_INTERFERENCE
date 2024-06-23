@@ -27,10 +27,10 @@
         border: none;
         outline: none;
       }
-      #logCoordsButton {
+      #sendCoordsButton {
         position: absolute;
         top: 20px;
-        left: 100px;
+        left: 150px;
         background-color: #333;
         color: white;
         padding: 10px;
@@ -39,7 +39,7 @@
         outline: none;
       }
       #controlsTab.active,
-      #logCoordsButton.active {
+      #sendCoordsButton.active {
         background-color: #555;
       }
       #sliderContainer {
@@ -70,30 +70,23 @@
   </head>
   <body>
     <button id="controlsTab">Controls</button>
-    <!-- <button id="logCoordsButton">Log Coordinates</button> -->
+    <!-- <button id="sendCoordsButton">Send Coordinates</button> -->
     <div id="sliderContainer">
       <label for="ampX">X-Amplitude: <span id="ampXVal"></span></label>
-      <input id="ampX" type="range" min="0" max="50" value="0" step="0.1" />
+      <input id="ampX" type="range" min="0" max="50" value="17.5" step="0.1" />
       <label for="freqX">X-Frequency: <span id="freqXVal"></span></label>
-      <input
-        id="freqX"
-        type="range"
-        min="0.01"
-        max="10"
-        value="6"
-        step="0.01"
-      />
+      <input id="freqX" type="range" min="0" max="10" value="6" step="0.01" />
       <label for="phaseX">X-Phase: <span id="phaseXVal"></span></label>
       <input id="phaseX" type="range" min="0" max="6.28" value="0" step="0.1" />
       <label for="ampY">Y-Amplitude: <span id="ampYVal"></span></label>
-      <input id="ampY" type="range" min="0" max="50" value="0" step="0.1" />
+      <input id="ampY" type="range" min="0" max="50" value="12.2" step="0.1" />
       <label for="freqY">Y-Frequency: <span id="freqYVal"></span></label>
       <input
         id="freqY"
         type="range"
-        min="0.01"
+        min="0"
         max="10"
-        value="0"
+        value="0.01"
         step="0.01"
       />
       <label for="phaseY">Y-Phase: <span id="phaseYVal"></span></label>
@@ -126,9 +119,9 @@
         step="0.1"
       />
       <label for="radius">Radius: <span id="radiusVal"></span></label>
-      <input id="radius" type="range" min="0" max="300" value="88" step="1" />
+      <input id="radius" type="range" min="0" max="300" value="80" step="1" />
       <label for="density">Density: <span id="densityVal"></span></label>
-      <input id="density" type="range" min="1" max="100" value="33" step="1" />
+      <input id="density" type="range" min="1" max="100" value="100" step="1" />
     </div>
     <div id="canvasContainer"></div>
     <script>
@@ -148,6 +141,12 @@
       let additionalZoom = 1; // Initial additional zoom level
       let easycam;
       let points = []; // Array to store the points
+      let initialPoints = []; // Array to store the initial points
+      let prevPoints = []; // Array to store the previous points for comparison
+      let isSendingCoords = false; // Flag to control the coordinate sending
+
+      // WebSocket connection
+      // let ws = new WebSocket("ws://localhost:8765");
 
       function setup() {
         canvas = createCanvas(windowWidth, windowHeight, WEBGL);
@@ -191,8 +190,18 @@
         });
 
         // document
-        //   .getElementById("logCoordsButton")
-        //   .addEventListener("click", logCoordinates);
+        //   .getElementById("sendCoordsButton")
+        //   .addEventListener("click", () => {
+        //     isSendingCoords = !isSendingCoords;
+        //     const sendCoordsButton =
+        //       document.getElementById("sendCoordsButton");
+        //     if (isSendingCoords) {
+        //       initialPoints = points.map((p) => [p.x, p.y, p.z]); // Save the initial points
+        //       sendCoordsButton.textContent = "Stop Sending";
+        //     } else {
+        //       sendCoordsButton.textContent = "Send Coordinates";
+        //     }
+        //   });
 
         // Add event listeners to update the display values
         ampXSlider.addEventListener("input", updateValues);
@@ -293,24 +302,25 @@
             endShape();
           }
         }
-      }
 
-      function logCoordinates() {
-        const nonZeroPoints = points.filter(
-          (p) => p.x !== 0 || p.y !== 0 || p.z !== 0
-        );
-        const csvContent = nonZeroPoints
-          .map((p) => `${p.x},${p.y},${p.z}`)
-          .join("\n");
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.setAttribute("hidden", "");
-        a.setAttribute("href", url);
-        a.setAttribute("download", "coordinates.csv");
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        // Send coordinates to WebSocket server if changed and if sending is enabled
+        // if (isSendingCoords) {
+        //   let pointsData = points.map((p) => [p.x, p.y, p.z]);
+        //   if (JSON.stringify(pointsData) !== JSON.stringify(prevPoints)) {
+        //     ws.send(JSON.stringify({ coordinates: pointsData }));
+        //     console.log("Sending points data:", pointsData);
+        //     prevPoints = pointsData; // Update previous points
+        //   }
+        //   // Stop sending if coordinates return to the initial state
+        //   if (JSON.stringify(pointsData) === JSON.stringify(initialPoints)) {
+        //     isSendingCoords = false;
+        //     document.getElementById("sendCoordsButton").textContent =
+        //       "Send Coordinates";
+        //     console.log(
+        //       "Coordinates returned to initial state, stopping send."
+        //     );
+        //   }
+        // }
       }
 
       function windowResized() {
