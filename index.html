@@ -8,18 +8,91 @@
     <script src="https://unpkg.com/p5.easycam"></script>
     <style>
       body {
-        display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
         margin: 0;
         background-color: #000;
         flex-direction: column;
+        overflow: hidden; /* Hide all overflow */
+      }
+      #buttonContainer {
+        display: flex;
+        gap: 5px;
+      }
+      #presetHolyOne {
+        top: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+      #presetFirstBorn {
+        top: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+      #presetHolyGrid {
+        top: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+      #presetFlowerOfLife {
+        top: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+      #presetHolyCross {
+        top: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+      #presetPyramidFlow {
+        top: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+      #presetOrbs {
+        top: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+      #presetTime {
+        top: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
       }
       #controlsTab {
-        position: absolute;
-        top: 20px;
-        left: 20px;
         background-color: #333;
         color: white;
         padding: 10px;
@@ -28,9 +101,7 @@
         outline: none;
       }
       #sendCoordsButton {
-        position: absolute;
-        top: 20px;
-        left: 150px;
+        margin-left: auto;
         background-color: #333;
         color: white;
         padding: 10px;
@@ -69,26 +140,29 @@
     </style>
   </head>
   <body>
-    <button id="controlsTab">Controls</button>
-    <!-- <button id="sendCoordsButton">Send Coordinates</button> -->
+    <div id="buttonContainer">
+      <button id="controlsTab">Controls</button>
+      <button id="presetHolyOne">Holy One</button>
+      <button id="presetFirstBorn">First Born</button>
+      <button id="presetHolyGrid">Holy Grid</button>
+      <button id="presetHolyCross">Holy Cross</button>
+      <button id="presetFlowerOfLife">Flower of Life</button>
+      <button id="presetPyramidFlow">Pyramid Flow</button>
+      <button id="presetOrbs">Orbs</button>
+      <button id="presetTime">Time</button>
+      <button id="sendCoordsButton">Send Coordinates</button>
+    </div>
     <div id="sliderContainer">
       <label for="ampX">X-Amplitude: <span id="ampXVal"></span></label>
-      <input id="ampX" type="range" min="0" max="50" value="17.5" step="0.1" />
+      <input id="ampX" type="range" min="0" max="100" value="0" step="0.1" />
       <label for="freqX">X-Frequency: <span id="freqXVal"></span></label>
-      <input id="freqX" type="range" min="0" max="10" value="6" step="0.01" />
+      <input id="freqX" type="range" min="0" max="15" value="0" step="0.01" />
       <label for="phaseX">X-Phase: <span id="phaseXVal"></span></label>
       <input id="phaseX" type="range" min="0" max="6.28" value="0" step="0.1" />
       <label for="ampY">Y-Amplitude: <span id="ampYVal"></span></label>
-      <input id="ampY" type="range" min="0" max="50" value="12.2" step="0.1" />
+      <input id="ampY" type="range" min="0" max="100" value="0" step="0.1" />
       <label for="freqY">Y-Frequency: <span id="freqYVal"></span></label>
-      <input
-        id="freqY"
-        type="range"
-        min="0"
-        max="10"
-        value="0.01"
-        step="0.01"
-      />
+      <input id="freqY" type="range" min="0" max="15" value="0" step="0.01" />
       <label for="phaseY">Y-Phase: <span id="phaseYVal"></span></label>
       <input
         id="phaseY"
@@ -98,14 +172,16 @@
         value="0"
         step="0.01"
       />
-      <label for="timeSpeed">Time Speed: <span id="timeSpeedVal"></span></label>
+      <label for="timeSpeed"
+        >Rate of Change: <span id="timeSpeedVal"></span
+      ></label>
       <input
         id="timeSpeed"
         type="range"
-        min="0.01"
-        max="0.5"
-        value="0"
-        step="0.001"
+        min="0"
+        max=".99"
+        value="0.01"
+        step="0.01"
       />
       <label for="spinSpeed">Spin Speed: <span id="spinSpeedVal"></span></label>
       <input id="spinSpeed" type="range" min="0" max="1" value="0" step="0.1" />
@@ -113,15 +189,19 @@
       <input
         id="zoomLevel"
         type="range"
-        min="0.1"
+        min="0"
         max="2"
         value="0.5"
         step="0.1"
       />
       <label for="radius">Radius: <span id="radiusVal"></span></label>
-      <input id="radius" type="range" min="0" max="300" value="80" step="1" />
+      <input id="radius" type="range" min="0" max="400" value="1" step="1" />
       <label for="density">Density: <span id="densityVal"></span></label>
-      <input id="density" type="range" min="1" max="100" value="100" step="1" />
+      <input id="density" type="range" min="1" max="100" value="1" step="1" />
+      <label for="connect"
+        >Connect-X: <input type="checkbox" id="connect"
+      /></label>
+      <label for="light">Light: <input type="checkbox" id="light" /></label>
     </div>
     <div id="canvasContainer"></div>
     <script>
@@ -135,7 +215,9 @@
         spinSpeedSlider,
         zoomLevelSlider,
         radiusSlider,
-        densitySlider;
+        densitySlider,
+        connectCheckbox,
+        lightCheckbox;
       let canvas;
       let angle = 0; // Initial angle for rotation
       let additionalZoom = 1; // Initial additional zoom level
@@ -146,7 +228,7 @@
       let isSendingCoords = false; // Flag to control the coordinate sending
 
       // WebSocket connection
-      // let ws = new WebSocket("ws://localhost:8765");
+      let ws = new WebSocket("ws://localhost:8765");
 
       function setup() {
         canvas = createCanvas(windowWidth, windowHeight, WEBGL);
@@ -163,6 +245,8 @@
         zoomLevelSlider = document.getElementById("zoomLevel");
         radiusSlider = document.getElementById("radius");
         densitySlider = document.getElementById("density");
+        connectCheckbox = document.getElementById("connect");
+        lightCheckbox = document.getElementById("light");
 
         easycam = createEasyCam({ distance: 500 });
         easycam.state_reset = {
@@ -189,19 +273,19 @@
           }
         });
 
-        // document
-        //   .getElementById("sendCoordsButton")
-        //   .addEventListener("click", () => {
-        //     isSendingCoords = !isSendingCoords;
-        //     const sendCoordsButton =
-        //       document.getElementById("sendCoordsButton");
-        //     if (isSendingCoords) {
-        //       initialPoints = points.map((p) => [p.x, p.y, p.z]); // Save the initial points
-        //       sendCoordsButton.textContent = "Stop Sending";
-        //     } else {
-        //       sendCoordsButton.textContent = "Send Coordinates";
-        //     }
-        //   });
+        document
+          .getElementById("sendCoordsButton")
+          .addEventListener("click", () => {
+            isSendingCoords = !isSendingCoords;
+            const sendCoordsButton =
+              document.getElementById("sendCoordsButton");
+            if (isSendingCoords) {
+              initialPoints = points.map((p) => [p.x, p.y, p.z]); // Save the initial points
+              sendCoordsButton.textContent = "Stop Sending";
+            } else {
+              sendCoordsButton.textContent = "Send Coordinates";
+            }
+          });
 
         // Add event listeners to update the display values
         ampXSlider.addEventListener("input", updateValues);
@@ -216,7 +300,167 @@
         radiusSlider.addEventListener("input", updateValues);
         densitySlider.addEventListener("input", updateValues);
 
+        // resetSliders(); // Call this function to reset sliders to zero at setup
+        document
+          .getElementById("presetHolyOne")
+          .addEventListener("click", applyHolyOnePreset);
+        document
+          .getElementById("presetFirstBorn")
+          .addEventListener("click", applyFirstBornPreset);
+        document
+          .getElementById("presetHolyGrid")
+          .addEventListener("click", applyHolyGridPreset);
+        document
+          .getElementById("presetFlowerOfLife")
+          .addEventListener("click", applyFlowerOfLifePreset);
+        document
+          .getElementById("presetHolyCross")
+          .addEventListener("click", applyHolyCrossPreset);
+        document
+          .getElementById("presetPyramidFlow")
+          .addEventListener("click", applyPyramidFlowPreset);
+        document
+          .getElementById("presetOrbs")
+          .addEventListener("click", applyOrbsPreset);
+        document
+          .getElementById("presetTime")
+          .addEventListener("click", applyTimePreset);
+
         // Initial call to set the display values
+        updateValues();
+      }
+
+      function resetSliders() {
+        ampXSlider.value = 0;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 0;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 0;
+        radiusSlider.value = 1;
+        densitySlider.value = 1;
+        updateValues();
+      }
+
+      function applyHolyOnePreset() {
+        ampXSlider.value = 0;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 0;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 0.5;
+        radiusSlider.value = 1;
+        densitySlider.value = 1;
+        updateValues();
+      }
+      function applyFirstBornPreset() {
+        ampXSlider.value = 10;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 10;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.01;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 0.5;
+        radiusSlider.value = 1;
+        densitySlider.value = 1;
+        updateValues();
+      }
+      function applyHolyGridPreset() {
+        ampXSlider.value = 0.5;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 0.5;
+        freqYSlider.value = 0.5;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.01;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 1.2;
+        radiusSlider.value = 29;
+        densitySlider.value = 99;
+        updateValues();
+      }
+
+      function applyFlowerOfLifePreset() {
+        ampXSlider.value = 38;
+        freqXSlider.value = 6;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 38;
+        freqYSlider.value = 6;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.01;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 0.4;
+        radiusSlider.value = 400;
+        densitySlider.value = 100;
+        updateValues();
+      }
+
+      function applyHolyCrossPreset() {
+        ampXSlider.value = 50;
+        freqXSlider.value = 4;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 50;
+        freqYSlider.value = 10;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.01;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 0.4;
+        radiusSlider.value = 400;
+        densitySlider.value = 97;
+        updateValues();
+      }
+      function applyPyramidFlowPreset() {
+        ampXSlider.value = 0;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 9;
+        freqYSlider.value = 0.5;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.03;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 0.5;
+        radiusSlider.value = 216;
+        densitySlider.value = 98;
+        updateValues();
+      }
+      function applyOrbsPreset() {
+        ampXSlider.value = 9;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 21;
+        freqYSlider.value = 0.5;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.1;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 0.5;
+        radiusSlider.value = 35;
+        densitySlider.value = 99;
+        connectCheckbox.checked = true;
+        lightCheckbox.checked = false;
+        updateValues();
+      }
+      function applyTimePreset() {
+        ampXSlider.value = 0;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 0;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 0.75;
+        radiusSlider.value = 88;
+        densitySlider.value = 90;
+        connectCheckbox.checked = false;
+        lightCheckbox.checked = false;
         updateValues();
       }
 
@@ -253,7 +497,13 @@
         // Get the actual density value
         let density = PI * ((101 - parseFloat(densitySlider.value)) / 100);
 
-        background(0);
+        // Conditionally set background color based on lightCheckbox
+        if (lightCheckbox.checked) {
+          background(135, 206, 235); // Sky blue color
+        } else {
+          background(0); // Black color
+        }
+
         rotateZ(angle); // Rotate horizontally based on angle
 
         angle += spinSpeed; // Increment angle based on spin speed
@@ -272,7 +522,11 @@
 
         for (let r = 0; r < radius; r += 20) {
           for (let phi = 0; phi < PI; phi += density) {
-            beginShape(POINTS);
+            if (connectCheckbox.checked) {
+              beginShape();
+            } else {
+              beginShape(POINTS);
+            }
             for (let theta = 0; theta < TWO_PI; theta += density) {
               let x = r * sin(phi) * cos(theta);
               let y = r * sin(phi) * sin(theta);
@@ -303,24 +557,36 @@
           }
         }
 
+        // Connect points along X axis if connect is true
+        if (connectCheckbox.checked) {
+          // stroke(255, 0, 0); // Red color for X connections
+          for (let i = 0; i < points.length - 1; i++) {
+            let p1 = points[i];
+            let p2 = points[i + 1];
+            if (p1.y === p2.y && p1.z === p2.z) {
+              line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+            }
+          }
+        }
+
         // Send coordinates to WebSocket server if changed and if sending is enabled
-        // if (isSendingCoords) {
-        //   let pointsData = points.map((p) => [p.x, p.y, p.z]);
-        //   if (JSON.stringify(pointsData) !== JSON.stringify(prevPoints)) {
-        //     ws.send(JSON.stringify({ coordinates: pointsData }));
-        //     console.log("Sending points data:", pointsData);
-        //     prevPoints = pointsData; // Update previous points
-        //   }
-        //   // Stop sending if coordinates return to the initial state
-        //   if (JSON.stringify(pointsData) === JSON.stringify(initialPoints)) {
-        //     isSendingCoords = false;
-        //     document.getElementById("sendCoordsButton").textContent =
-        //       "Send Coordinates";
-        //     console.log(
-        //       "Coordinates returned to initial state, stopping send."
-        //     );
-        //   }
-        // }
+        if (isSendingCoords) {
+          let pointsData = points.map((p) => [p.x, p.y, p.z]);
+          if (JSON.stringify(pointsData) !== JSON.stringify(prevPoints)) {
+            ws.send(JSON.stringify({ coordinates: pointsData }));
+            console.log("Sending points data:", pointsData);
+            prevPoints = pointsData; // Update previous points
+          }
+          // Stop sending if coordinates return to the initial state
+          if (JSON.stringify(pointsData) === JSON.stringify(initialPoints)) {
+            isSendingCoords = false;
+            document.getElementById("sendCoordsButton").textContent =
+              "Send Coordinates";
+            console.log(
+              "Coordinates returned to initial state, stopping send."
+            );
+          }
+        }
       }
 
       function windowResized() {
