@@ -92,6 +92,15 @@
         border: none;
         outline: none;
       }
+      #presetOcta {
+        top: 20px;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
       #controlsTab {
         background-color: #333;
         color: white;
@@ -150,6 +159,7 @@
       <button id="presetPyramidFlow">Pyramid Flow</button>
       <button id="presetOrbs">Orbs</button>
       <button id="presetTime">Time</button>
+      <button id="presetOcta">Octa</button>
       <button id="sendCoordsButton">Send Coordinates</button>
     </div>
     <div id="sliderContainer">
@@ -184,7 +194,14 @@
         step="0.01"
       />
       <label for="spinSpeed">Spin Speed: <span id="spinSpeedVal"></span></label>
-      <input id="spinSpeed" type="range" min="0" max="1" value="0" step="0.1" />
+      <input
+        id="spinSpeed"
+        type="range"
+        min="0"
+        max="1"
+        value="0"
+        step="0.01"
+      />
       <label for="zoomLevel">Zoom Level: <span id="zoomLevelVal"></span></label>
       <input
         id="zoomLevel"
@@ -325,6 +342,9 @@
         document
           .getElementById("presetTime")
           .addEventListener("click", applyTimePreset);
+        document
+          .getElementById("presetOcta")
+          .addEventListener("click", applyOctaPreset);
 
         // Initial call to set the display values
         updateValues();
@@ -460,6 +480,22 @@
         radiusSlider.value = 88;
         densitySlider.value = 90;
         connectCheckbox.checked = false;
+        lightCheckbox.checked = false;
+        updateValues();
+      }
+      function applyOctaPreset() {
+        ampXSlider.value = 3.45;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 20;
+        freqYSlider.value = 2.5;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.01;
+        spinSpeedSlider.value = 0.01;
+        zoomLevelSlider.value = 0.2;
+        radiusSlider.value = 400;
+        densitySlider.value = 82;
+        connectCheckbox.checked = true;
         lightCheckbox.checked = false;
         updateValues();
       }
