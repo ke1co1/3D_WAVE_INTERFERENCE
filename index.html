@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script src="https://unpkg.com/p5.easycam"></script>
     <style>
+      html,
       body {
         justify-content: center;
         align-items: center;
@@ -14,11 +15,12 @@
         margin: 0;
         background-color: #000;
         flex-direction: column;
-        overflow: hidden; /* Hide all overflow */
+        overflow: hidden;
       }
       #buttonContainer {
         display: flex;
         gap: 5px;
+        overflow-x: auto;
       }
       #presetHolyOne {
         top: 20px;
@@ -124,12 +126,11 @@
       }
       #sliderContainer {
         position: absolute;
-        top: 60px;
-        left: 20px;
+        top: 55px;
         display: none;
         background-color: #444;
         padding: 10px;
-        border-radius: 5px;
+        overflow-y: auto;
       }
       label {
         display: block;
