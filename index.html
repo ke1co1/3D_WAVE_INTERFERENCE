@@ -150,6 +150,9 @@
     </style>
   </head>
   <body>
+    <audio id="audioPlayer" loop class="hidden">
+      <source src="theconnectedmind.mp3" type="audio/mpeg" />
+    </audio>
     <div id="buttonContainer">
       <button id="controlsTab">Controls</button>
       <button id="presetHolyOne">Holy One</button>
@@ -220,6 +223,9 @@
         >Connect-X: <input type="checkbox" id="connect"
       /></label>
       <label for="light">Light: <input type="checkbox" id="light" /></label>
+      <label for="audioControl"
+        >Play Audio: <input type="checkbox" id="audioControl"
+      /></label>
     </div>
     <div id="canvasContainer"></div>
     <script>
@@ -247,6 +253,31 @@
 
       // WebSocket connection
       let ws = new WebSocket("ws://localhost:8765");
+
+      let audioStarted = false;
+
+      // Get the audio element and the audio control checkbox
+      const audioPlayer = document.getElementById("audioPlayer");
+      const audioControl = document.getElementById("audioControl");
+
+      // Function to start and stop audio playback
+      function toggleAudio() {
+        if (audioControl.checked) {
+          audioPlayer
+            .play()
+            .then(() => {
+              audioPlayer.classList.remove("hidden");
+            })
+            .catch((error) => {
+              console.error("Error playing audio:", error);
+            });
+        } else {
+          audioPlayer.pause();
+        }
+      }
+
+      // Add event listener to the audio control checkbox
+      audioControl.addEventListener("change", toggleAudio);
 
       function setup() {
         canvas = createCanvas(windowWidth, windowHeight, WEBGL);
