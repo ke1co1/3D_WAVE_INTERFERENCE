@@ -1,0 +1,104 @@
+html,
+body {
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #000;
+  flex-direction: column;
+  overflow: hidden;
+}
+#buttonContainer {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+}
+#presetHolyOne,
+#presetFirstBorn,
+#presetHolyGrid,
+#presetFlowerOfLife,
+#presetHolyCross,
+#presetStarOfDavid,
+#presetPyramidFlow,
+#presetOrbs,
+#presetTime,
+#presetSupernova,
+#presetOcta {
+  top: 20px;
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+#controlsTab {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+
+}
+#sendCoordsButton {
+  margin-left: auto;
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+#controlsTab.active,
+#sendCoordsButton.active {
+  background-color: #555;
+}
+#sliderContainer {
+  position: absolute;
+  top: 55px;
+  display: none;
+  background-color: #444;
+  padding: 10px;
+  overflow-y: auto;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+label {
+  display: block;
+  color: white;
+  margin-top: 10px;
+}
+#canvasContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+.hidden {
+  display: none;
+}
+#centerVertical, #centerHorizontal {
+  margin-top: 15px;
+  cursor: pointer;
+  border: none;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  width: 100%;
+  background-color: #555; /* Dark gray background */
+  color: white;
+  padding: 8px 15px; /* Padding for a better button size */
+  font-size: 12px; /* Increased font size */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Add some shadow for depth */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+#centerVertical:hover, #centerHorizontal:hover {
+  background-color: #777; /* Lighter gray on hover */
+  transform: scale(1.02); /* Slightly larger on hover */
+}
+#centerVertical:active, #centerHorizontal:active {
+  background-color: #333; /* Darker gray when active */
+  transform: scale(1); /* Scale back to normal size when clicked */
+}

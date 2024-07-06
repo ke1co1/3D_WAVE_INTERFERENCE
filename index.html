@@ -6,148 +6,7 @@
     <title>3D Wave Interference</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script src="https://unpkg.com/p5.easycam"></script>
-    <style>
-      html,
-      body {
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-color: #000;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      #buttonContainer {
-        display: flex;
-        gap: 5px;
-        overflow-x: auto;
-      }
-      #presetHolyOne {
-        top: 20px;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #presetFirstBorn {
-        top: 20px;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #presetHolyGrid {
-        top: 20px;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #presetFlowerOfLife {
-        top: 20px;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #presetHolyCross {
-        top: 20px;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #presetPyramidFlow {
-        top: 20px;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #presetOrbs {
-        top: 20px;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #presetTime {
-        top: 20px;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #presetOcta {
-        top: 20px;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #controlsTab {
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #sendCoordsButton {
-        margin-left: auto;
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-        border: none;
-        outline: none;
-      }
-      #controlsTab.active,
-      #sendCoordsButton.active {
-        background-color: #555;
-      }
-      #sliderContainer {
-        position: absolute;
-        top: 55px;
-        display: none;
-        background-color: #444;
-        padding: 10px;
-        overflow-y: auto;
-      }
-      label {
-        display: block;
-        color: white;
-        margin-top: 10px;
-      }
-      #canvasContainer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100vw;
-        height: 100vh;
-      }
-      .hidden {
-        display: none;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <audio id="audioPlayer" loop class="hidden">
@@ -159,6 +18,8 @@
       <button id="presetFirstBorn">First Born</button>
       <button id="presetHolyGrid">Holy Grid</button>
       <button id="presetHolyCross">Holy Cross</button>
+      <button id="presetSupernova">Supernova</button>
+      <button id="presetStarOfDavid">Star of David</button>
       <button id="presetFlowerOfLife">Flower of Life</button>
       <button id="presetPyramidFlow">Pyramid Flow</button>
       <button id="presetOrbs">Orbs</button>
@@ -170,13 +31,13 @@
       <label for="ampX">X-Amplitude: <span id="ampXVal"></span></label>
       <input id="ampX" type="range" min="0" max="100" value="0" step="0.1" />
       <label for="freqX">X-Frequency: <span id="freqXVal"></span></label>
-      <input id="freqX" type="range" min="0" max="15" value="0" step="0.01" />
+      <input id="freqX" type="range" min="0" max="15" value="0" step="0.001" />
       <label for="phaseX">X-Phase: <span id="phaseXVal"></span></label>
       <input id="phaseX" type="range" min="0" max="6.28" value="0" step="0.1" />
       <label for="ampY">Y-Amplitude: <span id="ampYVal"></span></label>
       <input id="ampY" type="range" min="0" max="100" value="0" step="0.1" />
       <label for="freqY">Y-Frequency: <span id="freqYVal"></span></label>
-      <input id="freqY" type="range" min="0" max="15" value="0" step="0.01" />
+      <input id="freqY" type="range" min="0" max="15" value="0" step="0.001" />
       <label for="phaseY">Y-Phase: <span id="phaseYVal"></span></label>
       <input
         id="phaseY"
@@ -195,7 +56,7 @@
         min="0"
         max=".99"
         value="0.01"
-        step="0.01"
+        step="0.001"
       />
       <label for="spinSpeed">Spin Speed: <span id="spinSpeedVal"></span></label>
       <input
@@ -222,10 +83,15 @@
       <label for="connect"
         >Connect-X: <input type="checkbox" id="connect"
       /></label>
+      <label for="toggleDualPhase"
+        >Dual-phase: <input type="checkbox" id="toggleDualPhase"
+      /></label>
       <label for="light">Light: <input type="checkbox" id="light" /></label>
       <label for="audioControl"
         >Play Audio: <input type="checkbox" id="audioControl"
       /></label>
+      <button id="centerVertical">Vertical</button>
+      <button id="centerHorizontal">horizontal</button>
     </div>
     <div id="canvasContainer"></div>
     <script>
@@ -241,6 +107,7 @@
         radiusSlider,
         densitySlider,
         connectCheckbox,
+        toggleDualPhase,
         lightCheckbox;
       let canvas;
       let angle = 0; // Initial angle for rotation
@@ -295,7 +162,22 @@
         radiusSlider = document.getElementById("radius");
         densitySlider = document.getElementById("density");
         connectCheckbox = document.getElementById("connect");
+        dualPhaseCheckbox = document.getElementById("toggleDualPhase");
         lightCheckbox = document.getElementById("light");
+
+        document
+          .getElementById("centerVertical")
+          .addEventListener("click", () => {
+            easycam.setState(easycam.state_reset, 1000); // Reset to initial state over 1 second
+          });
+
+        document
+          .getElementById("centerHorizontal")
+          .addEventListener("click", () => {
+            let horizontalResetState = { ...easycam.state_reset };
+            horizontalResetState.rotation = [0.707, 0.707, 0, 0]; // Change rotation to reset horizontally (90 degrees around the X axis)
+            easycam.setState(horizontalResetState, 1000); // Reset to horizontal state over 1 second
+          });
 
         easycam = createEasyCam({ distance: 500 });
         easycam.state_reset = {
@@ -348,6 +230,7 @@
         zoomLevelSlider.addEventListener("input", updateValues);
         radiusSlider.addEventListener("input", updateValues);
         densitySlider.addEventListener("input", updateValues);
+        dualPhaseCheckbox.addEventListener("change", updateValues);
 
         // resetSliders(); // Call this function to reset sliders to zero at setup
         document
@@ -359,6 +242,12 @@
         document
           .getElementById("presetHolyGrid")
           .addEventListener("click", applyHolyGridPreset);
+        document
+          .getElementById("presetSupernova")
+          .addEventListener("click", applySupernovaPreset);
+        document
+          .getElementById("presetStarOfDavid")
+          .addEventListener("click", applyStarOfDavidPreset);
         document
           .getElementById("presetFlowerOfLife")
           .addEventListener("click", applyFlowerOfLifePreset);
@@ -409,6 +298,7 @@
         zoomLevelSlider.value = 0.5;
         radiusSlider.value = 1;
         densitySlider.value = 1;
+        connectCheckbox.checked = false;
         updateValues();
       }
       function applyFirstBornPreset() {
@@ -423,23 +313,39 @@
         zoomLevelSlider.value = 0.5;
         radiusSlider.value = 1;
         densitySlider.value = 1;
+        connectCheckbox.checked = false;
         updateValues();
       }
       function applyHolyGridPreset() {
-        ampXSlider.value = 0.5;
+        ampXSlider.value = 0.1;
         freqXSlider.value = 0;
         phaseXSlider.value = 0;
         ampYSlider.value = 0.5;
-        freqYSlider.value = 0.5;
+        freqYSlider.value = 0.1;
         phaseYSlider.value = 0;
-        timeSpeedSlider.value = 0.01;
-        spinSpeedSlider.value = 0;
-        zoomLevelSlider.value = 1.2;
-        radiusSlider.value = 29;
-        densitySlider.value = 99;
+        timeSpeedSlider.value = 0.02;
+        spinSpeedSlider.value = 0.01;
+        zoomLevelSlider.value = 2;
+        radiusSlider.value = 21;
+        densitySlider.value = 93;
+        dualPhaseCheckbox.checked = true;
         updateValues();
       }
-
+      function applyStarOfDavidPreset() {
+        ampXSlider.value = 0;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 0;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0;
+        spinSpeedSlider.value = 1;
+        zoomLevelSlider.value = 2;
+        radiusSlider.value = 21;
+        densitySlider.value = 38;
+        connectCheckbox.checked = true;
+        updateValues();
+      }
       function applyFlowerOfLifePreset() {
         ampXSlider.value = 38;
         freqXSlider.value = 6;
@@ -447,11 +353,13 @@
         ampYSlider.value = 38;
         freqYSlider.value = 6;
         phaseYSlider.value = 0;
-        timeSpeedSlider.value = 0.01;
+        timeSpeedSlider.value = 0.15;
         spinSpeedSlider.value = 0;
         zoomLevelSlider.value = 0.4;
-        radiusSlider.value = 400;
+        radiusSlider.value = 220;
         densitySlider.value = 100;
+        connectCheckbox.checked = true;
+        dualPhaseCheckbox.checked = false;
         updateValues();
       }
 
@@ -464,9 +372,27 @@
         phaseYSlider.value = 0;
         timeSpeedSlider.value = 0.01;
         spinSpeedSlider.value = 0;
-        zoomLevelSlider.value = 0.4;
-        radiusSlider.value = 400;
+        zoomLevelSlider.value = 0.25;
+        radiusSlider.value = 265;
         densitySlider.value = 97;
+        dualPhaseCheckbox.checked = false;
+        connectCheckbox.checked = false;
+        updateValues();
+      }
+      function applySupernovaPreset() {
+        ampXSlider.value = 0.1;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 8;
+        freqYSlider.value = 0.1;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.99;
+        spinSpeedSlider.value = 0.01;
+        zoomLevelSlider.value = 0.5;
+        radiusSlider.value = 400;
+        densitySlider.value = 100;
+        dualPhaseCheckbox.checked = false;
+        connectCheckbox.checked = false;
         updateValues();
       }
       function applyPyramidFlowPreset() {
@@ -476,12 +402,19 @@
         ampYSlider.value = 9;
         freqYSlider.value = 0.5;
         phaseYSlider.value = 0;
-        timeSpeedSlider.value = 0.03;
+        timeSpeedSlider.value = 0.005;
         spinSpeedSlider.value = 0;
-        zoomLevelSlider.value = 0.5;
-        radiusSlider.value = 216;
+        zoomLevelSlider.value = 2;
+        radiusSlider.value = 11;
         densitySlider.value = 98;
+        dualPhaseCheckbox.checked = false;
+        connectCheckbox.checked = false;
         updateValues();
+
+        // Center Horizontally
+        let horizontalResetState = { ...easycam.state_reset };
+        horizontalResetState.rotation = [0.707, 0.707, 0, 0]; // 90 degrees around the X axis
+        easycam.setState(horizontalResetState, 1000);
       }
       function applyOrbsPreset() {
         ampXSlider.value = 9;
@@ -507,10 +440,10 @@
         freqYSlider.value = 0;
         phaseYSlider.value = 0;
         timeSpeedSlider.value = 0;
-        spinSpeedSlider.value = 0;
-        zoomLevelSlider.value = 0.75;
-        radiusSlider.value = 88;
-        densitySlider.value = 90;
+        spinSpeedSlider.value = 0.02;
+        zoomLevelSlider.value = 1;
+        radiusSlider.value = 200;
+        densitySlider.value = 84;
         connectCheckbox.checked = false;
         lightCheckbox.checked = false;
         updateValues();
@@ -588,7 +521,7 @@
 
         points = []; // Clear points array
 
-        for (let r = 0; r < radius; r += 20) {
+        for (let r = 0; r < radius; r += 11) {
           for (let phi = 0; phi < PI; phi += density) {
             if (connectCheckbox.checked) {
               beginShape();
@@ -622,6 +555,44 @@
               vertex(newX, newY, newZ);
             }
             endShape();
+          }
+        }
+
+        // Render the contraction phase if dualPhaseMode is active
+        if (dualPhaseCheckbox.checked) {
+          for (let r = 0; r < radius; r += 11) {
+            for (let phi = 0; phi < PI; phi += density) {
+              if (connectCheckbox.checked) {
+                beginShape();
+              } else {
+                beginShape(POINTS);
+              }
+              for (let theta = 0; theta < TWO_PI; theta += density) {
+                let x = r * sin(phi) * cos(theta);
+                let y = r * sin(phi) * sin(theta);
+                let z = r * cos(phi);
+
+                let angleX = TWO_PI * freqX * (theta / TWO_PI) + phaseX - time;
+                let angleY = TWO_PI * freqY * (phi / PI) + phaseY - time;
+                let sineX = ampX * sin(angleX);
+                let sineY = ampY * sin(angleY);
+                let offset = sineX + sineY;
+
+                let col = color(
+                  255 - 128 * sin(offset),
+                  255 - 128 * cos(offset),
+                  255
+                );
+                stroke(col);
+
+                let newX = x + offset * cos(theta);
+                let newY = y + offset * sin(theta);
+                let newZ = z + offset;
+
+                vertex(newX, newY, newZ);
+              }
+              endShape();
+            }
           }
         }
 
