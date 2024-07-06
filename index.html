@@ -21,6 +21,7 @@
       <button id="presetSupernova">Supernova</button>
       <button id="presetStarOfDavid">Star of David</button>
       <button id="presetFlowerOfLife">Flower of Life</button>
+      <button id="presetVirtueWisdom">Virtue & Wisdom</button>
       <button id="presetPyramidFlow">Pyramid Flow</button>
       <button id="presetOrbs">Orbs</button>
       <button id="presetTime">Time</button>
@@ -252,6 +253,9 @@
           .getElementById("presetFlowerOfLife")
           .addEventListener("click", applyFlowerOfLifePreset);
         document
+          .getElementById("presetVirtueWisdom")
+          .addEventListener("click", applyVirtueWisdomPreset);
+        document
           .getElementById("presetHolyCross")
           .addEventListener("click", applyHolyCrossPreset);
         document
@@ -362,7 +366,22 @@
         dualPhaseCheckbox.checked = false;
         updateValues();
       }
-
+      function applyVirtueWisdomPreset() {
+        ampXSlider.value = 44;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 20;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.011;
+        spinSpeedSlider.value = 0.02;
+        zoomLevelSlider.value = 1;
+        radiusSlider.value = 150;
+        densitySlider.value = 33;
+        connectCheckbox.checked = true;
+        dualPhaseCheckbox.checked = true;
+        updateValues();
+      }
       function applyHolyCrossPreset() {
         ampXSlider.value = 50;
         freqXSlider.value = 4;

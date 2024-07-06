@@ -23,6 +23,7 @@ body {
 #presetOrbs,
 #presetTime,
 #presetSupernova,
+#presetVirtueWisdom,
 #presetOcta {
   top: 20px;
   background-color: #333;
@@ -31,6 +32,10 @@ body {
   cursor: pointer;
   border: none;
   outline: none;
+}
+
+#ampX, #freqX, #phaseX, #ampY, #freqX, #phaseY, #timeSpeed, #spinSpeed, #zoomLevel, #radius, #density, #connect, #toggleDualPhase, #light, #audioControl {
+  cursor: pointer;
 }
 
 #controlsTab {
