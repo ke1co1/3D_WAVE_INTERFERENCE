@@ -12,21 +12,25 @@
     <audio id="audioPlayer" loop class="hidden">
       <source src="theconnectedmind.mp3" type="audio/mpeg" />
     </audio>
-    <div id="buttonContainer">
-      <button id="controlsTab">Controls</button>
-      <button id="presetHolyOne">Holy One</button>
-      <button id="presetFirstBorn">First Born</button>
-      <button id="presetHolyGrid">Holy Grid</button>
-      <button id="presetHolyCross">Holy Cross</button>
-      <button id="presetSupernova">Supernova</button>
-      <button id="presetStarOfDavid">Star of David</button>
-      <button id="presetFlowerOfLife">Flower of Life</button>
-      <button id="presetVirtueWisdom">Virtue & Wisdom</button>
-      <button id="presetPyramidFlow">Pyramid Flow</button>
-      <button id="presetOrbs">Orbs</button>
-      <button id="presetTime">Time</button>
-      <button id="presetOcta">Octa</button>
-      <button id="sendCoordsButton">Send Coordinates</button>
+    <div id="buttonContainerWrapper">
+      <div id="buttonContainer">
+        <button id="controlsTab">Controls</button>
+        <button id="presetHolyOne">Holy One</button>
+        <button id="presetFirstBorn">First Born</button>
+        <button id="presetHolyGrid">Holy Grid</button>
+        <button id="presetHolyCross">Holy Cross</button>
+        <button id="presetSupernova">Supernova</button>
+        <button id="presetStarOfDavid">Star of David</button>
+        <button id="presetFlowerOfLife">Flower of Life</button>
+        <button id="presetVirtueWisdom">Virtue & Wisdom</button>
+        <button id="presetPyramidFlow">Pyramid Flow</button>
+        <button id="presetOrbs">Orbs</button>
+        <button id="presetTime">Time</button>
+        <button id="presetOcta">Octa</button>
+        <button id="presetMerkaba">Merkaba</button>
+        <button id="sendCoordsButton" class="arrow">Send Coordinates</button>
+      </div>
+      <button id="toggleButtonContainer" class="arrow">&larr;</button>
     </div>
     <div id="sliderContainer">
       <label for="ampX">X-Amplitude: <span id="ampXVal"></span></label>
@@ -233,6 +237,32 @@
         densitySlider.addEventListener("input", updateValues);
         dualPhaseCheckbox.addEventListener("change", updateValues);
 
+        // Toggle button container visibility
+        document
+          .getElementById("toggleButtonContainer")
+          .addEventListener("click", function () {
+            const buttonContainer = document.getElementById("buttonContainer");
+            const buttonContainerWrapper = document.getElementById(
+              "buttonContainerWrapper"
+            );
+            const toggleButton = document.getElementById(
+              "toggleButtonContainer"
+            );
+
+            if (
+              buttonContainer.style.display === "none" ||
+              buttonContainer.style.display === ""
+            ) {
+              buttonContainer.style.display = "flex";
+              toggleButton.innerHTML = "&larr;"; // Arrow pointing left
+              toggleButton.style.marginLeft = "auto"; // Move the button to the end
+            } else {
+              buttonContainer.style.display = "none";
+              toggleButton.innerHTML = "&rarr;"; // Arrow pointing right
+              toggleButton.style.marginLeft = "0"; // Move the button to the start
+            }
+          });
+
         // resetSliders(); // Call this function to reset sliders to zero at setup
         document
           .getElementById("presetHolyOne")
@@ -270,6 +300,9 @@
         document
           .getElementById("presetOcta")
           .addEventListener("click", applyOctaPreset);
+        document
+          .getElementById("presetMerkaba")
+          .addEventListener("click", applyMerkabaPreset);
 
         // Initial call to set the display values
         updateValues();
@@ -303,6 +336,7 @@
         radiusSlider.value = 1;
         densitySlider.value = 1;
         connectCheckbox.checked = false;
+        dualPhaseCheckbox.checked = false;
         updateValues();
       }
       function applyFirstBornPreset() {
@@ -318,6 +352,7 @@
         radiusSlider.value = 1;
         densitySlider.value = 1;
         connectCheckbox.checked = false;
+        dualPhaseCheckbox.checked = false;
         updateValues();
       }
       function applyHolyGridPreset() {
@@ -332,7 +367,8 @@
         zoomLevelSlider.value = 2;
         radiusSlider.value = 21;
         densitySlider.value = 93;
-        dualPhaseCheckbox.checked = true;
+        connectCheckbox.checked = false;
+        dualPhaseCheckbox.checked = false;
         updateValues();
       }
       function applyStarOfDavidPreset() {
@@ -482,6 +518,32 @@
         connectCheckbox.checked = true;
         lightCheckbox.checked = false;
         updateValues();
+      }
+      function applyMerkabaPreset() {
+        ampXSlider.value = 44;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 3.9;
+        ampYSlider.value = 20;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.011;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 1;
+        radiusSlider.value = 260;
+        densitySlider.value = 19;
+        connectCheckbox.checked = true;
+        dualPhaseCheckbox.checked = true;
+        updateValues();
+
+        // rotate veritcal
+        let verticalResetState = { ...easycam.state_reset };
+        verticalResetState.rotation = [
+          Math.sin((238 * Math.PI) / 360),
+          0,
+          0,
+          Math.cos((238 * Math.PI) / 360),
+        ];
+        easycam.setState(verticalResetState, 1000);
       }
 
       function updateValues() {
