@@ -34,11 +34,11 @@
       <button id="toggleButtonContainer" class="arrow">&larr;</button>
     </div>
     <div id="affirmations">
-      <p class="affirmation">Love</p>
-      <p class="affirmation">Health</p>
-      <p class="affirmation">Wealth</p>
-      <p class="affirmation">Abundance</p>
-      <p class="affirmation">Success</p>
+      <p class="affirmation hidden">Love</p>
+      <p class="affirmation hidden">Health</p>
+      <p class="affirmation hidden">Wealth</p>
+      <p class="affirmation hidden">Abundance</p>
+      <p class="affirmation hidden">Success</p>
     </div>
 
     <div id="sliderContainer">
@@ -103,6 +103,9 @@
       <label for="light">Light: <input type="checkbox" id="light" /></label>
       <label for="audioControl"
         >Play Audio: <input type="checkbox" id="audioControl"
+      /></label>
+      <label for="affirmationsControl"
+        >Affirmations: <input type="checkbox" id="affirmationsControl"
       /></label>
       <button id="centerVertical">Vertical</button>
       <button id="centerHorizontal">horizontal</button>
@@ -271,6 +274,26 @@
               toggleButton.style.marginLeft = "0"; // Move the button to the start
             }
           });
+
+        // Get the affirmations control checkbox and all affirmation elements
+        const affirmationsControl = document.getElementById(
+          "affirmationsControl"
+        );
+        const affirmations = document.querySelectorAll(".affirmation");
+
+        // Function to toggle the hidden class on all affirmation elements
+        function toggleAffirmations() {
+          affirmations.forEach((affirmation) => {
+            if (affirmationsControl.checked) {
+              affirmation.classList.remove("hidden");
+            } else {
+              affirmation.classList.add("hidden");
+            }
+          });
+        }
+
+        // Add event listener to the affirmations control checkbox
+        affirmationsControl.addEventListener("change", toggleAffirmations);
 
         // resetSliders(); // Call this function to reset sliders to zero at setup
         document
