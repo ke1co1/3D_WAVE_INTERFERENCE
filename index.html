@@ -19,19 +19,28 @@
         <button id="presetFirstBorn">First Born</button>
         <button id="presetHolyGrid">Holy Grid</button>
         <button id="presetHolyCross">Holy Cross</button>
+        <button id="presetGodhead">God Head</button>
+        <button id="presetMacrocosm">Macrocosm</button>
         <button id="presetSupernova">Supernova</button>
-        <button id="presetStarOfDavid">Star of David</button>
         <button id="presetFlowerOfLife">Flower of Life</button>
         <button id="presetVirtueWisdom">Virtue & Wisdom</button>
         <button id="presetPyramidFlow">Pyramid Flow</button>
         <button id="presetOrbs">Orbs</button>
         <button id="presetTime">Time</button>
         <button id="presetOcta">Octa</button>
-        <button id="presetMerkaba">Merkaba</button>
-        <button id="sendCoordsButton" class="arrow">Send Coordinates</button>
+        <button id="presetInfiniteLoop">Infinite Loop</button>
+        <button id="sendCoordsButton" class="hidden">Send Coordinates</button>
       </div>
       <button id="toggleButtonContainer" class="arrow">&larr;</button>
     </div>
+    <div id="affirmations">
+      <p class="affirmation">Love</p>
+      <p class="affirmation">Health</p>
+      <p class="affirmation">Wealth</p>
+      <p class="affirmation">Abundance</p>
+      <p class="affirmation">Success</p>
+    </div>
+
     <div id="sliderContainer">
       <label for="ampX">X-Amplitude: <span id="ampXVal"></span></label>
       <input id="ampX" type="range" min="0" max="100" value="0" step="0.1" />
@@ -277,8 +286,11 @@
           .getElementById("presetSupernova")
           .addEventListener("click", applySupernovaPreset);
         document
-          .getElementById("presetStarOfDavid")
-          .addEventListener("click", applyStarOfDavidPreset);
+          .getElementById("presetGodhead")
+          .addEventListener("click", applyGodheadPreset);
+        document
+          .getElementById("presetMacrocosm")
+          .addEventListener("click", applyMacrocosmPreset);
         document
           .getElementById("presetFlowerOfLife")
           .addEventListener("click", applyFlowerOfLifePreset);
@@ -301,8 +313,8 @@
           .getElementById("presetOcta")
           .addEventListener("click", applyOctaPreset);
         document
-          .getElementById("presetMerkaba")
-          .addEventListener("click", applyMerkabaPreset);
+          .getElementById("presetInfiniteLoop")
+          .addEventListener("click", applyInfiniteLoopPreset);
 
         // Initial call to set the display values
         updateValues();
@@ -371,7 +383,23 @@
         dualPhaseCheckbox.checked = false;
         updateValues();
       }
-      function applyStarOfDavidPreset() {
+      function applyGodheadPreset() {
+        ampXSlider.value = 0;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 0;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0;
+        spinSpeedSlider.value = 0.98;
+        zoomLevelSlider.value = 2;
+        radiusSlider.value = 21;
+        densitySlider.value = 50;
+        connectCheckbox.checked = false;
+        dualPhaseCheckbox.checked = false;
+        updateValues();
+      }
+      function applyMacrocosmPreset() {
         ampXSlider.value = 0;
         freqXSlider.value = 0;
         phaseXSlider.value = 0;
@@ -382,22 +410,22 @@
         spinSpeedSlider.value = 1;
         zoomLevelSlider.value = 2;
         radiusSlider.value = 21;
-        densitySlider.value = 38;
+        densitySlider.value = 33;
         connectCheckbox.checked = true;
         updateValues();
       }
       function applyFlowerOfLifePreset() {
-        ampXSlider.value = 38;
+        ampXSlider.value = 74;
         freqXSlider.value = 6;
         phaseXSlider.value = 0;
-        ampYSlider.value = 38;
-        freqYSlider.value = 6;
+        ampYSlider.value = 100;
+        freqYSlider.value = 0.265;
         phaseYSlider.value = 0;
-        timeSpeedSlider.value = 0.15;
-        spinSpeedSlider.value = 0;
+        timeSpeedSlider.value = 0.25;
+        spinSpeedSlider.value = 0.22;
         zoomLevelSlider.value = 0.4;
-        radiusSlider.value = 220;
-        densitySlider.value = 100;
+        radiusSlider.value = 140;
+        densitySlider.value = 99;
         connectCheckbox.checked = true;
         dualPhaseCheckbox.checked = false;
         updateValues();
@@ -495,13 +523,23 @@
         freqYSlider.value = 0;
         phaseYSlider.value = 0;
         timeSpeedSlider.value = 0;
-        spinSpeedSlider.value = 0.02;
+        spinSpeedSlider.value = 0.12;
         zoomLevelSlider.value = 1;
         radiusSlider.value = 200;
         densitySlider.value = 84;
         connectCheckbox.checked = false;
         lightCheckbox.checked = false;
         updateValues();
+
+        // rotate veritcal
+        let verticalResetState = { ...easycam.state_reset };
+        verticalResetState.rotation = [
+          Math.sin((238 * Math.PI) / 360),
+          0,
+          0,
+          Math.cos((238 * Math.PI) / 360),
+        ];
+        easycam.setState(verticalResetState, 1000);
       }
       function applyOctaPreset() {
         ampXSlider.value = 3.45;
@@ -519,18 +557,18 @@
         lightCheckbox.checked = false;
         updateValues();
       }
-      function applyMerkabaPreset() {
+      function applyInfiniteLoopPreset() {
         ampXSlider.value = 44;
-        freqXSlider.value = 0;
-        phaseXSlider.value = 3.9;
-        ampYSlider.value = 20;
-        freqYSlider.value = 0;
+        freqXSlider.value = 2;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 6;
+        freqYSlider.value = 0.398;
         phaseYSlider.value = 0;
-        timeSpeedSlider.value = 0.011;
-        spinSpeedSlider.value = 0;
+        timeSpeedSlider.value = 0.25;
+        spinSpeedSlider.value = 0.25;
         zoomLevelSlider.value = 1;
-        radiusSlider.value = 260;
-        densitySlider.value = 19;
+        radiusSlider.value = 78;
+        densitySlider.value = 99;
         connectCheckbox.checked = true;
         dualPhaseCheckbox.checked = true;
         updateValues();

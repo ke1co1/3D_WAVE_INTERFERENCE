@@ -23,13 +23,14 @@ body {
 #presetHolyGrid,
 #presetFlowerOfLife,
 #presetHolyCross,
-#presetStarOfDavid,
+#presetGodhead,
+#presetMacrocosm,
 #presetPyramidFlow,
 #presetOrbs,
 #presetTime,
 #presetSupernova,
 #presetVirtueWisdom,
-#presetMerkaba,
+#presetInfiniteLoop,
 #presetOcta {
   top: 20px;
   background-color: #333;
@@ -68,7 +69,7 @@ body {
 }
 #sliderContainer {
   position: absolute;
-  top: 55px;
+  top: 95px;
   display: none;
   background-color: #444;
   padding: 10px;
@@ -124,4 +125,56 @@ label {
   border-radius: 50%;
   font-size: 16px;
   margin-left: auto;
+}
+
+#affirmations {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.affirmation {
+  color: white;
+  font-size: 1em;
+  animation: hypnoticEffect 10s infinite alternate, slideEffect 20s linear infinite;
+}
+
+@keyframes hypnoticEffect {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(0deg) translateY(0px);
+    color: #00ffff;
+  }
+  25% {
+    opacity: 0.5;
+    transform: scale(1.1) rotate(15deg) translateY(-10px);
+    color: #ff00ff;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(-15deg) translateY(10px);
+    color: #ffff00;
+  }
+  75% {
+    opacity: 0.5;
+    transform: scale(1.1) rotate(15deg) translateY(-10px);
+    color: #ff4500;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) rotate(0deg) translateY(0px);
+    color: #00ff00;
+  }
+}
+
+@keyframes slideEffect {
+  0% {
+    transform: translateX(100%);
+  }
+  50% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
