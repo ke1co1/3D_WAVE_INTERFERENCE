@@ -29,6 +29,7 @@
         <button id="presetTime">Time</button>
         <button id="presetOcta">Octa</button>
         <button id="presetInfiniteLoop">Infinite Loop</button>
+        <button id="presetExpandContract">Expand/Contract</button>
         <button id="sendCoordsButton" class="hidden">Send Coordinates</button>
       </div>
       <button id="toggleButtonContainer" class="arrow">&larr;</button>
@@ -338,6 +339,9 @@
         document
           .getElementById("presetInfiniteLoop")
           .addEventListener("click", applyInfiniteLoopPreset);
+        document
+          .getElementById("presetExpandContract")
+          .addEventListener("click", applyExpandContractPreset);
 
         // Initial call to set the display values
         updateValues();
@@ -539,19 +543,20 @@
         updateValues();
       }
       function applyTimePreset() {
-        ampXSlider.value = 0;
+        ampXSlider.value = 47.8;
         freqXSlider.value = 0;
         phaseXSlider.value = 0;
-        ampYSlider.value = 0;
-        freqYSlider.value = 0;
+        ampYSlider.value = 38.9;
+        freqYSlider.value = 0.03;
         phaseYSlider.value = 0;
-        timeSpeedSlider.value = 0;
-        spinSpeedSlider.value = 0.12;
-        zoomLevelSlider.value = 1;
-        radiusSlider.value = 200;
+        timeSpeedSlider.value = 0.017;
+        spinSpeedSlider.value = 0.2;
+        zoomLevelSlider.value = 1.25;
+        radiusSlider.value = 184;
         densitySlider.value = 84;
         connectCheckbox.checked = false;
         lightCheckbox.checked = false;
+        dualPhaseCheckbox.checked = true;
         updateValues();
 
         // rotate veritcal
@@ -581,7 +586,7 @@
         updateValues();
       }
       function applyInfiniteLoopPreset() {
-        ampXSlider.value = 44;
+        ampXSlider.value = 3.5;
         freqXSlider.value = 2;
         phaseXSlider.value = 0;
         ampYSlider.value = 6;
@@ -590,10 +595,10 @@
         timeSpeedSlider.value = 0.25;
         spinSpeedSlider.value = 0.25;
         zoomLevelSlider.value = 1;
-        radiusSlider.value = 78;
+        radiusSlider.value = 7;
         densitySlider.value = 99;
-        connectCheckbox.checked = true;
-        dualPhaseCheckbox.checked = true;
+        connectCheckbox.checked = false;
+        dualPhaseCheckbox.checked = false;
         updateValues();
 
         // rotate veritcal
@@ -606,7 +611,22 @@
         ];
         easycam.setState(verticalResetState, 1000);
       }
-
+      function applyExpandContractPreset() {
+        ampXSlider.value = 100;
+        freqXSlider.value = 15;
+        phaseXSlider.value = 6.2;
+        ampYSlider.value = 100;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.007;
+        spinSpeedSlider.value = 0;
+        zoomLevelSlider.value = 1.2;
+        radiusSlider.value = 135;
+        densitySlider.value = 88;
+        connectCheckbox.checked = true;
+        dualPhaseCheckbox.checked = true;
+        updateValues();
+      }
       function updateValues() {
         document.getElementById("ampXVal").textContent = ampXSlider.value;
         document.getElementById("freqXVal").textContent = freqXSlider.value;
