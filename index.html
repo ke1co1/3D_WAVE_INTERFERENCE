@@ -30,6 +30,7 @@
         <button id="presetOcta">Octa</button>
         <button id="presetInfiniteLoop">Infinite Loop</button>
         <button id="presetExpandContract">Expand/Contract</button>
+        <button id="presetSelfPropulsion">Self Propulsion</button>
         <button id="sendCoordsButton" class="hidden">Send Coordinates</button>
       </div>
       <button id="toggleButtonContainer" class="arrow">&larr;</button>
@@ -342,6 +343,9 @@
         document
           .getElementById("presetExpandContract")
           .addEventListener("click", applyExpandContractPreset);
+        document
+          .getElementById("presetSelfPropulsion")
+          .addEventListener("click", applySelfPropulsionPreset);
 
         // Initial call to set the display values
         updateValues();
@@ -626,6 +630,27 @@
         connectCheckbox.checked = true;
         dualPhaseCheckbox.checked = true;
         updateValues();
+      }
+      function applySelfPropulsionPreset() {
+        ampXSlider.value = 100;
+        freqXSlider.value = 0;
+        phaseXSlider.value = 0;
+        ampYSlider.value = 0;
+        freqYSlider.value = 0;
+        phaseYSlider.value = 0;
+        timeSpeedSlider.value = 0.01;
+        spinSpeedSlider.value = 0.22;
+        zoomLevelSlider.value = 1;
+        radiusSlider.value = 184;
+        densitySlider.value = 84;
+        connectCheckbox.checked = true;
+        dualPhaseCheckbox.checked = true;
+        updateValues();
+
+        // Center Horizontally
+        let horizontalResetState = { ...easycam.state_reset };
+        horizontalResetState.rotation = [0.707, 0.707, 0, 0]; // 90 degrees around the X axis
+        easycam.setState(horizontalResetState, 1000);
       }
       function updateValues() {
         document.getElementById("ampXVal").textContent = ampXSlider.value;
