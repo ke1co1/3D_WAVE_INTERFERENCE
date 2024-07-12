@@ -29,7 +29,7 @@ body {
 #presetOrbs,
 #presetTime,
 #presetSupernova,
-#presetVirtueWisdom,
+#presetAsAbove,
 #presetInfiniteLoop,
 #presetSelfPropulsion,
 #presetExpandContract,
@@ -75,9 +75,12 @@ body {
   display: none;
   background-color: #444;
   padding: 10px;
-  overflow-y: auto;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+  overflow-y: auto;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px; 
+  max-height: 50vh; /* Adjusted for ease of access on different screen sizes.*/
 }
 label {
   display: block;

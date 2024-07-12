@@ -23,7 +23,7 @@
         <button id="presetMacrocosm">Macrocosm</button>
         <button id="presetSupernova">Supernova</button>
         <button id="presetFlowerOfLife">Flower of Life</button>
-        <button id="presetVirtueWisdom">Virtue & Wisdom</button>
+        <button id="presetAsAbove">As Above</button>
         <button id="presetPyramidFlow">Pyramid Flow</button>
         <button id="presetOrbs">Orbs</button>
         <button id="presetTime">Time</button>
@@ -320,8 +320,8 @@
           .getElementById("presetFlowerOfLife")
           .addEventListener("click", applyFlowerOfLifePreset);
         document
-          .getElementById("presetVirtueWisdom")
-          .addEventListener("click", applyVirtueWisdomPreset);
+          .getElementById("presetAsAbove")
+          .addEventListener("click", applyAsAbovePreset);
         document
           .getElementById("presetHolyCross")
           .addEventListener("click", applyHolyCrossPreset);
@@ -461,19 +461,19 @@
         dualPhaseCheckbox.checked = false;
         updateValues();
       }
-      function applyVirtueWisdomPreset() {
-        ampXSlider.value = 44;
+      function applyAsAbovePreset() {
+        ampXSlider.value = 0;
         freqXSlider.value = 0;
         phaseXSlider.value = 0;
-        ampYSlider.value = 20;
-        freqYSlider.value = 0;
+        ampYSlider.value = 5.3;
+        freqYSlider.value = 0.265;
         phaseYSlider.value = 0;
-        timeSpeedSlider.value = 0.011;
-        spinSpeedSlider.value = 0.02;
+        timeSpeedSlider.value = 0.005;
+        spinSpeedSlider.value = 0;
         zoomLevelSlider.value = 1;
-        radiusSlider.value = 150;
-        densitySlider.value = 33;
-        connectCheckbox.checked = true;
+        radiusSlider.value = 92;
+        densitySlider.value = 98;
+        connectCheckbox.checked = false;
         dualPhaseCheckbox.checked = true;
         updateValues();
       }
@@ -547,17 +547,17 @@
         updateValues();
       }
       function applyTimePreset() {
-        ampXSlider.value = 47.8;
+        ampXSlider.value = 0;
         freqXSlider.value = 0;
         phaseXSlider.value = 0;
-        ampYSlider.value = 38.9;
-        freqYSlider.value = 0.03;
+        ampYSlider.value = 0;
+        freqYSlider.value = 0;
         phaseYSlider.value = 0;
-        timeSpeedSlider.value = 0.017;
-        spinSpeedSlider.value = 0.2;
-        zoomLevelSlider.value = 1.25;
-        radiusSlider.value = 184;
-        densitySlider.value = 84;
+        timeSpeedSlider.value = 0.005;
+        spinSpeedSlider.value = 0.26;
+        zoomLevelSlider.value = 1.5;
+        radiusSlider.value = 92;
+        densitySlider.value = 98;
         connectCheckbox.checked = false;
         lightCheckbox.checked = false;
         dualPhaseCheckbox.checked = true;
@@ -708,6 +708,7 @@
 
         points = []; // Clear points array
 
+        // Original points rendering
         for (let r = 0; r < radius; r += 11) {
           for (let phi = 0; phi < PI; phi += density) {
             if (connectCheckbox.checked) {
@@ -783,37 +784,94 @@
           }
         }
 
-        // Connect points along X axis if connect is true
-        if (connectCheckbox.checked) {
-          // stroke(255, 0, 0); // Red color for X connections
-          for (let i = 0; i < points.length - 1; i++) {
-            let p1 = points[i];
-            let p2 = points[i + 1];
-            if (p1.y === p2.y && p1.z === p2.z) {
-              line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+        // Duplicated points rendering with 45-degree rotation
+        for (let r = 0; r < radius; r += 11) {
+          for (let phi = 0; phi < PI; phi += density) {
+            if (connectCheckbox.checked) {
+              beginShape();
+            } else {
+              beginShape(POINTS);
             }
+            for (let theta = 0; theta < TWO_PI; theta += density) {
+              let x = r * sin(phi) * cos(theta);
+              let y = r * sin(phi) * sin(theta);
+              let z = r * cos(phi);
+
+              let angleX = TWO_PI * freqX * (theta / TWO_PI) + phaseX + time;
+              let angleY = TWO_PI * freqY * (phi / PI) + phaseY + time;
+              let sineX = ampX * sin(angleX);
+              let sineY = ampY * sin(angleY);
+              let offset = sineX + sineY;
+
+              let col = color(
+                128 + 128 * sin(offset),
+                128 + 128 * cos(offset),
+                255
+              );
+              stroke(col);
+
+              let newX = x + offset * cos(theta);
+              let newY = y + offset * sin(theta);
+              let newZ = z + offset;
+
+              // Apply 45-degree rotation
+              let rotatedPoint = rotatePoint45Degrees(newX, newY, newZ);
+
+              vertex(rotatedPoint.x, rotatedPoint.y, rotatedPoint.z);
+            }
+            endShape();
           }
         }
 
-        // Send coordinates to WebSocket server if changed and if sending is enabled
-        if (isSendingCoords) {
-          let pointsData = points.map((p) => [p.x, p.y, p.z]);
-          if (JSON.stringify(pointsData) !== JSON.stringify(prevPoints)) {
-            ws.send(JSON.stringify({ coordinates: pointsData }));
-            console.log("Sending points data:", pointsData);
-            prevPoints = pointsData; // Update previous points
-          }
-          // Stop sending if coordinates return to the initial state
-          if (JSON.stringify(pointsData) === JSON.stringify(initialPoints)) {
-            isSendingCoords = false;
-            document.getElementById("sendCoordsButton").textContent =
-              "Send Coordinates";
-            console.log(
-              "Coordinates returned to initial state, stopping send."
-            );
+        // Render the contraction phase for the rotated points if dualPhaseMode is active
+        if (dualPhaseCheckbox.checked) {
+          for (let r = 0; r < radius; r += 11) {
+            for (let phi = 0; phi < PI; phi += density) {
+              if (connectCheckbox.checked) {
+                beginShape();
+              } else {
+                beginShape(POINTS);
+              }
+              for (let theta = 0; theta < TWO_PI; theta += density) {
+                let x = r * sin(phi) * cos(theta);
+                let y = r * sin(phi) * sin(theta);
+                let z = r * cos(phi);
+
+                let angleX = TWO_PI * freqX * (theta / TWO_PI) + phaseX - time;
+                let angleY = TWO_PI * freqY * (phi / PI) + phaseY - time;
+                let sineX = ampX * sin(angleX);
+                let sineY = ampY * sin(angleY);
+                let offset = sineX + sineY;
+
+                let col = color(
+                  255 - 128 * sin(offset),
+                  255 - 128 * cos(offset),
+                  255
+                );
+                stroke(col);
+
+                let newX = x + offset * cos(theta);
+                let newY = y + offset * sin(theta);
+                let newZ = z + offset;
+
+                // Apply 45-degree rotation
+                let rotatedPoint = rotatePoint45Degrees(newX, newY, newZ);
+
+                vertex(rotatedPoint.x, rotatedPoint.y, rotatedPoint.z);
+              }
+              endShape();
+            }
           }
         }
       }
+
+      function rotatePoint45Degrees(x, y, z) {
+        const angle = PI / 4; // 45 degrees in radians
+        const rotatedX = x * cos(angle) - y * sin(angle);
+        const rotatedY = x * sin(angle) + y * cos(angle);
+        return { x: rotatedX, y: rotatedY, z: z };
+      }
+      S;
 
       function windowResized() {
         resizeCanvas(windowWidth, windowHeight);
