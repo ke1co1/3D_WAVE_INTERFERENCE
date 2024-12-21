@@ -71,7 +71,7 @@ body {
 }
 #sliderContainer {
   position: absolute;
-  top: 95px;
+  top: 55px;
   display: none;
   background-color: #444;
   padding: 10px;
@@ -80,7 +80,8 @@ body {
   overflow-y: auto;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px; 
-  max-height: 50vh; /* Adjusted for ease of access on different screen sizes.*/
+  max-height: 100vh;
+  /* width: 10%; */
 }
 label {
   display: block;
@@ -97,13 +98,13 @@ label {
 .hidden {
   display: none;
 }
-#centerVertical, #centerHorizontal {
+#centerNorth, #centerSouth, #centerHorizontal {
   margin-top: 15px;
   cursor: pointer;
   border: none;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  width: 100%;
+  width: 70%;
   background-color: #555; /* Dark gray background */
   color: white;
   padding: 8px 15px; /* Padding for a better button size */
