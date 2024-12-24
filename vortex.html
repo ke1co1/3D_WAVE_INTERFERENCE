@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vortex Math Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://unpkg.com/p5.easycam@1.0.1/p5.easycam.min.js"></script>
+  </head>
+  <body>
+    <!-- Add a container for the canvas -->
+    <div id="canvasContainer" style="width: 100%; height: 100%"></div>
+
+    <script>
+      // Define global variables
+      let basePoints; // Array to store base triangle vertices
+      let vortexCycle = [1, 2, 4, 8, 7, 5]; // Vortex math cycle
+      let easycam; // For enabling mouse interactions
+
+      function setup() {
+        let canvas = createCanvas(windowWidth, windowHeight, WEBGL); // Create a 3D canvas
+        canvas.parent("canvasContainer"); // Attach the canvas to the div
+        easycam = createEasyCam(); // Initialize EasyCam
+
+        // Define the base points for the triangle
+        basePoints = [
+          { x: 0, y: 100, z: 0 }, // Top vertex
+          { x: -86, y: -50, z: 0 }, // Bottom-left vertex
+          { x: 86, y: -50, z: 0 }, // Bottom-right vertex
+        ];
+
+        noLoop(); // Draw the visualization once (no animation)
+      }
+
+      function draw() {
+        background(0); // Reset background each time
+
+        // Draw base points
+        drawPoints(basePoints, 10); // Larger size for the base points
+
+        // Connect the base points using vortex math
+        connectPoints(basePoints, vortexCycle);
+
+        // Generate and draw additional points
+        let additionalPoints = [];
+        for (let i = 0; i < basePoints.length; i++) {
+          let nextIndex = (i + 1) % basePoints.length; // Wrap around to connect last to first
+          let points = generateInterpolatedPoints(
+            basePoints[i],
+            basePoints[nextIndex],
+            10, // Number of steps between points
+            20 // Vortex modulation scale
+          );
+          additionalPoints.push(...points);
+        }
+        drawPoints(additionalPoints, 5); // Smaller size for interpolated points
+      }
+
+      // Connect points based on vortex math cycle
+      function connectPoints(points, vortexCycle) {
+        for (let i = 0; i < vortexCycle.length; i++) {
+          let currentIndex = (vortexCycle[i] - 1) % points.length; // Vortex math starts from 1
+          let nextIndex =
+            (vortexCycle[(i + 1) % vortexCycle.length] - 1) % points.length;
+
+          let p1 = points[currentIndex];
+          let p2 = points[nextIndex];
+
+          stroke(255); // Line color (white)
+          strokeWeight(2); // Line thickness
+          line(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z); // Draw line
+        }
+      }
+
+      // Generate interpolated points with vortex modulation
+      function generateInterpolatedPoints(p1, p2, steps, vortexScale) {
+        let interpolatedPoints = [];
+        for (let i = 0; i <= steps; i++) {
+          let t = i / steps; // Interpolation factor
+          let x = p1.x + t * (p2.x - p1.x);
+          let y = p1.y + t * (p2.y - p1.y);
+          let z = p1.z + t * (p2.z - p1.z);
+
+          // Apply vortex modulation
+          let offset = vortexScale * sin(TWO_PI * t); // Sine wave modulation
+          x += offset;
+          y += offset;
+
+          interpolatedPoints.push({ x, y, z });
+        }
+        return interpolatedPoints;
+      }
+
+      // Draw points with a specific size
+      function drawPoints(points, pointSize) {
+        strokeWeight(pointSize);
+        stroke(255); // Point color (white)
+        for (let p of points) {
+          point(p.x, p.y, p.z); // Draw each point
+        }
+      }
+    </script>
+  </body>
+</html>
